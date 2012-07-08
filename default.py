@@ -7,10 +7,19 @@ xbox = xbmc.getCondVisibility("System.Platform.xbox")
 settings = xbmcaddon.Addon(id='plugin.video.gronkh_de')
 translation = settings.getLocalizedString
 
+forceViewMode=settings.getSetting("forceViewMode")
+if forceViewMode=="true":
+  forceViewMode=True
+else:
+  forceViewMode=False
+viewMode=str(settings.getSetting("viewMode"))
+
 def index():
         addDir(translation(30001),"http://gronkh.de/","listVideos","")
         addDir(translation(30002),"http://gronkh.de/lets-play","listGames","")
         xbmcplugin.endOfDirectory(pluginhandle)
+        if forceViewMode==True:
+          xbmc.executebuiltin('Container.SetViewMode('+viewMode+')')
 
 def listVideos(url):
         content = getUrl(url)
@@ -32,6 +41,8 @@ def listVideos(url):
           if len(match)>0:
             addDir(translation(30003),match[0],"listVideos","")
         xbmcplugin.endOfDirectory(pluginhandle)
+        if forceViewMode==True:
+          xbmc.executebuiltin('Container.SetViewMode('+viewMode+')')
 
 def listGames():
         content = getUrl("http://gronkh.de/lets-play")
@@ -49,6 +60,8 @@ def listGames():
           title=cleanTitle(title)
           addDir(title,url,'listVideos',thumb)
         xbmcplugin.endOfDirectory(pluginhandle)
+        if forceViewMode==True:
+          xbmc.executebuiltin('Container.SetViewMode('+viewMode+')')
 
 def playVideo(url):
         content = getUrl(url)
